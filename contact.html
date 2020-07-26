@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en-ca">
+<head>
+  <meta charset="utf-8">
+  <title>WHO Suicide report -1979 to 2016</title>
+    <link href="inlist.css" rel="stylesheet">
+  <style>
+div.relative {
+  position: relative;
+  width: 400px;
+  height: 200px;
+  border: 3px solid #73AD21;
+}
+
+div.absolute {
+  position: absolute;
+  top: 125px;
+  right: 0;
+  width: 550px;
+  height:900px;
+  border: 3px solid #73AD21;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>WHO Suicide report -1979 to 2016</h1>
+  <nav>
+    <ul class="nav">
+      <li><a  href="index.html">Total suicides</a></li>
+      <li><a  href="Product.html">Top 50 Countries</a></li>
+      <li><a  href="about.html">Gender based comparision</a></li>
+      <li><a class="current" href="contact.html">How we are doing</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<h>
+    <b>Average suicides per 100K population recorded between 1979 and 2016.</b> <br> </h>
+<!-- Initialize a select button -->
+<select id="selectButton"></select>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+<div class="absolute"><b>Highlights:-</b>
+
+  <p>1. Finally we would like to understand how the suicide trends look like whether it is improving or getting worse.
+    For analyzing we would calculate the median or average number of suicides per 100K.
+    <br><br>
+  	 2. Overall the average numbers of suicides per 100K for all countries  have risen starting 1979 to early 2000 , with few sharp
+        rises in between 1985 to 1989 and second spike in 1997 to 2000. Post year 2000, the overall numbers have stablized and reduced till 2015.
+        <br><br>
+     3. Russia, Japan have their average number of suicides reduced, while the Average number of cases for USA have stablized.<br>
+     4. The overall reduction in the average of suicides per 100K of population can be attributed to:-<br>
+        * Better Mental health management infrastructure/diagnosis/treatments.<br>
+        * Improvement in hospital facilities/infrastructure.<br>
+        * Nations formulating policies for  better public physical and Mental Health.<br>
+        * Enlightenment/Educational programs to help People understand the downside of ignoring mental health issues.<br>
+        * Social education training programs  conducted to ensure society does not treat patients with "Poor Mental heath"
+          differntly and be more accomodating.<br>
+        * Initiatives to ensure "Poor mental health/issues" are no longer a stigma.<br>
+
+      <b> Note: The trends are calculated based on the numbers reported to WHO. There are some years where the
+      data might be missing or not be reported to WHO or the deaths might be incorrectly categorzied.In some countries
+          suicides are considered a taboo or criminal offense by law.</b>
+
+
+
+  </p>
+
+</div>
+<!-- Color Scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    width = 860 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+//Read the data
+d3.csv("linechartdropdownMedian.csv", function(data) {
+
+    // List of groups (here I have one group per column)
+    var allGroup = d3.map(data, function(d){return(d.country)}).keys()
+
+    // add the options to the button
+    d3.select("#selectButton")
+      .selectAll('myOptions')
+     	.data(allGroup)
+      .enter()
+    	.append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+    // A color scale: one color for each group
+    var myColor = d3.scaleOrdinal()
+      .domain(allGroup)
+      .range(d3.schemeSet2);
+
+    // Add X axis --> it is a date format
+    var x = d3.scaleLinear()
+      .domain(d3.extent(data, function(d) { return d.year; }))
+      .range([ 0, width ]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x).ticks(7));
+
+    // Add Y axis
+    var y = d3.scaleLinear()
+      .domain([0, d3.max(data, function(d) { return +d.median; })])
+      .range([ height, 0 ]);
+    svg.append("g")
+      .call(d3.axisLeft(y));
+
+    // Initialize line with first group of the list
+    var line = svg
+      .append('g')
+      .append("path")
+        .datum(data.filter(function(d){return d.country==allGroup[0]}))
+        .attr("d", d3.line()
+          .x(function(d) { return x(d.year) })
+          .y(function(d) { return y(+d.median) })
+        )
+        .attr("stroke", function(d){ return myColor("valueA") })
+        .style("stroke-width", 4)
+        .style("fill", "none")
+
+    // A function that update the chart
+    function update(selectedGroup) {
+
+      // Create new data with the selection?
+      var dataFilter = data.filter(function(d){return d.country==selectedGroup})
+
+      // Give these new data to update line
+      line
+          .datum(dataFilter)
+          .transition()
+          .duration(1000)
+          .attr("d", d3.line()
+            .x(function(d) { return x(d.year) })
+            .y(function(d) { return y(+d.median) })
+          )
+          .attr("stroke", function(d){ return myColor(selectedGroup) })
+    }
+
+    // When the button is changed, run the updateChart function
+    d3.select("#selectButton").on("change", function(d) {
+        // recover the option that has been chosen
+        var selectedOption = d3.select(this).property("value")
+        // run the updateChart function with this selected option
+        update(selectedOption)
+    })
+
+})
+
+
+</script>
+</body>
+</html>
