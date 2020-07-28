@@ -7,7 +7,7 @@ body {
 }
 
 header {
-  background-color: #e2e2e2;
+  background-color: #b3c6ff;
   padding: 1em 0;
 }
 
@@ -44,5 +44,5 @@ p {
 }
 
 .nav .current {
-  background-color: red;
+  background-color: blue;
 }

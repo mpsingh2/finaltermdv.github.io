@@ -5,20 +5,24 @@
   <title>WHO Suicide report -1979 to 2016</title>
     <link href="inlist.css" rel="stylesheet">
   <style>
-div.relative {
-  position: relative;
-  width: 400px;
-  height: 200px;
-  border: 3px solid #73AD21;
+div.absolute1 {
+  position: absolute;
+  top:5500;
+  left:380;
+  width: 850px;
+  height: 300px;
+ // border: 3px solid #73AD21;
+ border:none;
 }
 
 div.absolute {
   position: absolute;
   top: 125px;
   right: 0;
-  width: 550px;
+  width: 530px;
   height:900px;
-  border: 3px solid #73AD21;
+ // border: 3px solid #73AD21;
+ border: none;
 }
 </style>
 </head>
@@ -28,7 +32,7 @@ div.absolute {
   <h1>WHO Suicide report -1979 to 2016</h1>
   <nav>
     <ul class="nav">
-      <li><a  href="index.html">Total suicides</a></li>
+      <li><a  href="index.html">Total Suicides</a></li>
       <li><a  href="Product.html">Top 50 Countries</a></li>
       <li><a  href="about.html">Gender based comparision</a></li>
       <li><a class="current" href="contact.html">How we are doing</a></li>
@@ -39,7 +43,7 @@ div.absolute {
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 <h>
-    <b>Average suicides per 100K population recorded between 1979 and 2016.</b> <br> </h>
+    <b>Average suicides rate per 100K population recorded between 1979 and 2016.</b> <br> </h>
 <!-- Initialize a select button -->
 <select id="selectButton"></select>
 
@@ -48,32 +52,39 @@ div.absolute {
 <div class="absolute"><b>Highlights:-</b>
 
   <p>1. Finally we would like to understand how the suicide trends look like whether it is improving or getting worse.
-    For analyzing we would calculate the median or average number of suicides per 100K.
-    <br><br>
-  	 2. Overall the average numbers of suicides per 100K for all countries  have risen starting 1979 to early 2000 , with few sharp
-        rises in between 1985 to 1989 and second spike in 1997 to 2000. Post year 2000, the overall numbers have stablized and reduced till 2015.
-        <br><br>
-     3. Russia, Japan have their average number of suicides reduced, while the Average number of cases for USA have stablized.<br>
-     4. The overall reduction in the average of suicides per 100K of population can be attributed to:-<br>
-        * Better Mental health management infrastructure/diagnosis/treatments.<br>
-        * Improvement in hospital facilities/infrastructure.<br>
-        * Nations formulating policies for  better public physical and Mental Health.<br>
-        * Enlightenment/Educational programs to help People understand the downside of ignoring mental health issues.<br>
-        * Social education training programs  conducted to ensure society does not treat patients with "Poor Mental heath"
-          differntly and be more accomodating.<br>
-        * Initiatives to ensure "Poor mental health/issues" are no longer a stigma.<br>
-
-      <b> Note: The trends are calculated based on the numbers reported to WHO. There are some years where the
-      data might be missing or not be reported to WHO or the deaths might be incorrectly categorzied.In some countries
-          suicides are considered a taboo or criminal offense by law.</b>
-
+    For analyzing we would calculate the average suicide rate per 100K of population.
+    <br>
+  	 2. Overall the average numbers of suicides per 100K for all countries  have risen starting 1979 to early 2000 ,
+        with few sharp rises in between 1985 to 1989 and second spike in 1997 to 2000. Post year 2000, the overall
+        numbers have stablized and reduced till 2016.
+        <br>
+     3. Countries with highest suicide rates Lithuania, Latvia, Korea,Russia, Japan,Krgystan,Khazhakistan,Slovenia,Uruguay.<br>
+     4. Countries which have been able to stablize the average suicide rates are USA,Canada,Japan,Thailand,Australia,France,Germany.<br>
+     5. Countries which have low the suicide rates are Peru.<br>
+     6. select the dropdown for viewing the average suicides per 100K for various other countries. <br>
+      7. The overall reduction in the average of suicides per 100K of population can be attributed to:-<br>
+          &nbsp &nbsp * Better mental health management infrastructure/diagnosis/treatments.<br>
+          &nbsp &nbsp * Improvement in hospital facilities/infrastructure.<br>
+          &nbsp &nbsp * Nations formulating policies for  better public physical and mental Health.<br>
+          &nbsp &nbsp * Enlightenment/Educational programs to help people understand the
+          &nbsp &nbsp &nbsp downside of ignoring mental health issues.<br>
+          &nbsp &nbsp * Social education training programs  conducted to ensure society does not
+          &nbsp &nbsp &nbsp treat patients with "Poor Mental heath" differntly and be more accomodating.<br>
+          &nbsp &nbsp * Initiatives to ensure "Poor mental health/issues" are no longer a stigma.<br>
 
 
   </p>
 
 </div>
+
+<div class="absolute1">
+  <b> Note: The trends are calculated based on the numbers reported to WHO. There are some years where the
+      data might be missing or not be reported to WHO or the deaths might be incorrectly categorized by countries.<br>
+      * In some countries suicides are considered a taboo or criminal offense by law, hence not reported.</br>
+      * Data for India and China was not accurately available.  </b>
+
+</div>
 <!-- Color Scale -->
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
 <script>
 
@@ -107,9 +118,10 @@ d3.csv("linechartdropdownMedian.csv", function(data) {
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
     // A color scale: one color for each group
-    var myColor = d3.scaleOrdinal()
-      .domain(allGroup)
-      .range(d3.schemeSet2);
+  //  var myColor = d3.scaleOrdinal()
+   //   .domain(allGroup)
+  //    .range(d3.schemeSet2);
+    var myColor = d3.scaleOrdinal().domain(allGroup).range(['#002699']);
 
     // Add X axis --> it is a date format
     var x = d3.scaleLinear()
@@ -117,7 +129,7 @@ d3.csv("linechartdropdownMedian.csv", function(data) {
       .range([ 0, width ]);
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x).ticks(7));
+      .call(d3.axisBottom(x).ticks(7).tickFormat(d3.format("d")));
 
     // Add Y axis
     var y = d3.scaleLinear()

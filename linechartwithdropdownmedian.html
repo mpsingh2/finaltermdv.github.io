@@ -12,7 +12,6 @@
 <div id="my_dataviz"></div>
 
 <!-- Color Scale -->
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
 <script>
 
@@ -46,9 +45,13 @@ d3.csv("linechartdropdownMedian.csv", function(data) {
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
     // A color scale: one color for each group
-    var myColor = d3.scaleOrdinal()
+   // var myColor = d3.scaleOrdinal()
+    //  .domain(allGroup)
+     // .range(d3.schemeSet2);
+
+      var myColor = d3.scaleOrdinal()
       .domain(allGroup)
-      .range(d3.schemeSet2);
+      .range(['#002699']);
 
     // Add X axis --> it is a date format
     var x = d3.scaleLinear()
@@ -56,7 +59,7 @@ d3.csv("linechartdropdownMedian.csv", function(data) {
       .range([ 0, width ]);
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x).ticks(7));
+      .call(d3.axisBottom(x).ticks(7).tickFormat(d3.format("d")));
 
     // Add Y axis
     var y = d3.scaleLinear()
